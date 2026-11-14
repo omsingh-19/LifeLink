@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Track a Request</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="inner">
+      <a class="logo" href="/"><span class="logo-mark">✚</span> LifeLink</a>
+      <span class="spacer"></span>
+      <a class="btn sm" href="/">Home</a>
+    </div>
+  </header>
+  <main class="container" style="max-width:720px">
+    <div class="card">
+      <h2>Track a request</h2>
+      <p class="small muted">Enter the code you received, for example <code>B-7KQ2MX</code> (blood) or <code>M-4HT9PA</code> (medicine). Only the status is shown, never personal details.</p>
+      <form id="track-form" class="row">
+        <input class="grow" name="code" required placeholder="Request code" aria-label="Request code" style="text-transform:uppercase">
+        <button class="btn primary">Track</button>
+      </form>
+    </div>
+    <div id="track-result"></div>
+  </main>
+  <script type="module">
+    import { action, api, badge, clock, esc, label, when } from "/js/api.js";
+    const form = document.getElementById("track-form");
+    const out = document.getElementById("track-result");
+    async function track(code) {
+      const r = await api(`/track/${encodeURIComponent(code.trim())}`);
+      const d = r.delivery;
+      const eta = d && d.eta_minutes && ["accepted", "collected", "out_for_delivery"].includes(d.status)
+        ? `<div class="banner info">Estimated arrival ~${clock(new Date(new Date(d.eta_computed_at).getTime() + d.eta_minutes * 60000))}
+            (${d.eta_source === "osrm" ? "road route" : "distance estimate"}; not live tracking)</div>` : "";
+      out.innerHTML = `<div class="card">
+        <div class="card-head"><h2>${esc(r.code)}</h2>${badge(r.status)}</div>
+        <p>${esc(r.summary)}</p>${eta}
+        ${d ? `<p class="small">Delivery: ${badge(d.status)}</p>` : ""}
+        <ul class="timeline">${r.timeline.map((t) => `<li><strong>${esc(label(t.to))}</strong>
+          <span class="small muted">${when(t.at)}</span>${t.note ? `<div class="small">${esc(t.note)}</div>` : ""}</li>`).join("")}</ul></div>`;
+      history.replaceState(null, "", `?code=${encodeURIComponent(r.code)}`);
+    }
+    form.addEventListener("submit", action(form.querySelector("button"), () => track(form.code.value)));
+    const initial = new URLSearchParams(location.search).get("code");
+    if (initial) { form.code.value = initial; track(initial).catch((e) => (out.innerHTML = `<div class="banner bad">${esc(e.message)}</div>`)); }
+  </script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LifeLink</title>
+  <meta name="description" content="LifeLink: emergency blood assistance and medicine enquiries in one place.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="inner">
+      <a class="logo" href="/"><span class="logo-mark">✚</span> LifeLink</a>
+      <span class="spacer"></span>
+      <a class="btn sm" href="/track.html">Track a request</a>
+      <a class="btn sm primary" href="#auth" id="go-login">Log in</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="inner">
+      <div>
+        <h1>Emergency blood and medicine help, in one place</h1>
+        <p class="muted">LifeLink connects patients and hospitals with verified donors, blood banks, pharmacies and delivery volunteers.</p>
+        <div class="feature"><span class="ic">🩸</span><div><strong>Find blood fast.</strong> Matching donors by group, distance and availability, plus nearby blood banks with reported stock.</div></div>
+        <div class="feature"><span class="ic">💊</span><div><strong>Locate medicines.</strong> Search participating pharmacies, send a request and get it confirmed.</div></div>
+        <div class="feature"><span class="ic">🛵</span><div><strong>Volunteer delivery.</strong> Supported deliveries with status updates and an estimated arrival time.</div></div>
+        <div class="feature"><span class="ic">✅</span><div><strong>Verified network.</strong> Donors and facilities are checked in person before they appear.</div></div>
+        <p class="disclaimer">LifeLink does not decide medical suitability or guarantee availability. Donors, blood banks and pharmacies confirm everything through their own procedures. In a life-threatening emergency call 108 or 112.</p>
+      </div>
+
+      <div class="card" id="auth">
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" aria-selected="true" data-auth-tab="login">Log in</button>
+          <button class="tab" role="tab" aria-selected="false" data-auth-tab="register">Register</button>
+        </div>
+
+        <form id="login-form">
+          <div class="field"><label for="l-email">Email</label><input id="l-email" name="email" type="email" required autocomplete="username"></div>
+          <div class="field"><label for="l-pass">Password</label><input id="l-pass" name="password" type="password" required autocomplete="current-password"></div>
+          <button class="btn primary" style="width:100%">Log in</button>
+          <details class="small muted" style="margin-top:.75rem">
+            <summary>Demo accounts (password <code>demo1234</code>)</summary>
+            <div id="demo-accounts" style="margin-top:.4rem"></div>
+          </details>
+        </form>
+
+        <form id="register-form" class="hidden">
+          <div class="field">
+            <label for="r-role">I am registering as</label>
+            <select id="r-role" name="role" required>
+              <option value="patient">Patient / family member</option>
+              <option value="donor">Blood donor</option>
+              <option value="hospital">Hospital</option>
+              <option value="bloodbank">Blood bank</option>
+              <option value="pharmacy">Pharmacy</option>
+              <option value="volunteer">Delivery volunteer</option>
+            </select>
+          </div>
+          <div class="form-grid">
+            <div class="field"><label for="r-name" id="r-name-label">Full name</label><input id="r-name" name="name" required minlength="2"></div>
+            <div class="field"><label for="r-phone">Phone</label><input id="r-phone" name="phone" required pattern="\+?[0-9 \-]{7,15}"></div>
+            <div class="field"><label for="r-email">Email</label><input id="r-email" name="email" type="email" required></div>
+            <div class="field"><label for="r-pass">Password</label><input id="r-pass" name="password" type="password" required minlength="6" autocomplete="new-password"></div>
+          </div>
+          <div class="form-grid" data-for="donor">
+            <div class="field"><label for="r-bg">Blood group</label><select id="r-bg" name="blood_group"></select></div>
+            <div class="field"><label for="r-pin">PIN code</label><input id="r-pin" name="pincode" pattern="\d{6}" inputmode="numeric"></div>
+            <div class="field"><label for="r-last">Last donation (optional)</label><input id="r-last" name="last_donation_date" type="date"></div>
+          </div>
+          <div class="form-grid" data-for="hospital bloodbank pharmacy">
+            <div class="field"><label for="r-addr">Address</label><input id="r-addr" name="address"></div>
+            <div class="field"><label for="r-lic">Registration / licence no.</label><input id="r-lic" name="license_no"></div>
+          </div>
+          <div class="form-grid" data-for="volunteer">
+            <div class="field"><label for="r-veh">Vehicle</label><select id="r-veh" name="vehicle"><option>two-wheeler</option><option>bicycle</option><option>car</option><option>on foot</option></select></div>
+            <div class="field"><label for="r-rad">Service radius (km)</label><input id="r-rad" name="service_radius_km" type="number" min="1" max="100" value="10"></div>
+          </div>
+          <div data-for="donor hospital bloodbank pharmacy volunteer">
+            <div class="field"><label for="r-city">City</label><input id="r-city" name="city" value="Indore"></div>
+            <div class="field"><label>Location</label><div id="r-loc"></div></div>
+          </div>
+          <p class="small muted" data-for="donor hospital bloodbank pharmacy volunteer">After registering, an administrator checks your documents in person before your account becomes active.</p>
+          <button class="btn primary" style="width:100%">Create account</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="grid grid-2">
+      <section class="card">
+        <div class="card-head"><h2>Near you</h2><span class="small muted">Verified blood banks, pharmacies and camps</span></div>
+        <div id="public-map" class="map tall"></div>
+        <div id="public-legend"></div>
+      </section>
+      <section>
+        <div class="card">
+          <h2>Search for a medicine</h2>
+          <form id="med-search" class="row">
+            <input class="grow" name="q" placeholder="e.g. Paracetamol" required minlength="2" aria-label="Medicine name">
+            <button class="btn primary">Search</button>
+          </form>
+          <p class="disclaimer">Availability is reported by pharmacies and may not be real-time. Log in as a patient to send a request.</p>
+          <div id="med-results"></div>
+        </div>
+        <div class="card">
+          <h2>Upcoming donation camps</h2>
+          <ul class="list" id="camps"></ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="/js/index.js"></script>
+</body>
+</html>
