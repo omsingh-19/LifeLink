@@ -92,7 +92,7 @@ backend/tests/     pytest tests for both end-to-end flows
 frontend/          HTML/CSS/JS pages; js/roles/ holds one dashboard per role
 ```
 
-## Team
+## Code by
 
-Alivia Hossain, Om Singh Lodhi, Saksham Gupta, Shikhar Tiwari, Sayan Bera
+Alivia Hossain
 School of Data Science and Forecasting, Devi Ahilya Vishwavidyalaya, Indore
