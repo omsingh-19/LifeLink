@@ -3,63 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LifeLink · Resources</title>
-  <meta name="description" content="Open-source projects, research papers, datasets and guidelines behind LifeLink.">
+  <title>Resources · LifeLink</title>
+  <meta name="description" content="Open-source projects, research papers, datasets and guidelines referenced by LifeLink.">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/css/resources.css">
 </head>
-<body class="res-page">
+<body>
   <header class="topbar">
     <div class="inner">
       <a class="logo" href="/"><span class="logo-mark">✚</span> LifeLink</a>
       <span class="spacer"></span>
-      <a class="btn sm" href="/">Home</a>
       <a class="btn sm" href="/track.html">Track a request</a>
       <a class="btn sm primary" href="/#auth">Log in</a>
     </div>
   </header>
 
-  <section class="res-hero">
-    <div class="blob b1"></div>
-    <div class="blob b2"></div>
-    <div class="blob b3"></div>
-    <div class="grid-bg"></div>
-
-    <div class="res-hero-inner">
-      <span class="eyebrow"><span class="live-dot"></span> Knowledge hub</span>
-      <h1>The open <span class="grad">science &amp; code</span><br>behind LifeLink</h1>
-      <p class="lede">Open-source projects we build on, research papers behind our matching and routing, open health datasets, and the guidelines that keep it safe, all in one place.</p>
-
-      <svg class="ecg" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 60 H380 L410 60 L430 20 L455 105 L480 8 L505 92 L525 60 H760 L785 60 L800 40 L815 75 L830 60 H1200" />
-      </svg>
-
-      <div class="stats" id="res-stats"></div>
+  <div class="page-head">
+    <div class="inner">
+      <nav class="crumbs small"><a href="/">Home</a> / Resources</nav>
+      <h1>Resources</h1>
+      <p>Software, papers, datasets and guidelines we used or referred to while building LifeLink. Useful if you want to understand how the matching and delivery estimates work, or extend the project.</p>
     </div>
-  </section>
+  </div>
 
-  <main class="res-main">
-    <div class="toolbar">
-      <div class="search">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="res-q" type="search" placeholder="Search resources, e.g. routing, FHIR, blood" aria-label="Search resources">
-      </div>
-      <div class="chips" id="res-chips" role="tablist" aria-label="Filter by category"></div>
-    </div>
+  <div class="res-layout">
+    <aside class="res-toc">
+      <div class="toc-title">On this page</div>
+      <ul id="res-toc"></ul>
+      <label for="res-q" class="toc-title">Filter</label>
+      <input id="res-q" type="search" placeholder="e.g. routing, blood">
+    </aside>
 
-    <div id="res-sections"></div>
-    <p class="empty hidden" id="res-empty">No resources match that search.</p>
+    <main class="res-body">
+      <div id="res-sections"></div>
+      <p class="empty hidden" id="res-empty">Nothing matches that filter.</p>
 
-    <section class="cta">
-      <div>
-        <h2>Know a great resource?</h2>
-        <p>LifeLink is an academic prototype. Suggest a paper, dataset or tool and help the network get smarter.</p>
-      </div>
-      <a class="btn primary lg" href="https://github.com/omsingh-19/LifeLink" target="_blank" rel="noopener">Contribute on GitHub →</a>
-    </section>
-
-    <p class="disclaimer">External links open third-party sites. LifeLink is not affiliated with them. Medical guidance always comes from qualified professionals. In an emergency call 108 or 112.</p>
-  </main>
+      <section class="res-sec res-note">
+        <h2>Suggest a resource</h2>
+        <p>Missing something useful? Open an issue or pull request on the <a href="https://github.com/omsingh-19/LifeLink" target="_blank" rel="noopener">project repository</a>.</p>
+        <p class="disclaimer">Links go to third-party sites that LifeLink is not affiliated with. Nothing here is medical advice. In an emergency call 108 or 112.</p>
+      </section>
+    </main>
+  </div>
 
   <script type="module" src="/js/resources.js"></script>
 </body>
